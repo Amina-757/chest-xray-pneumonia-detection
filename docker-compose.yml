@@ -1,0 +1,12 @@
+version: '3.8'
+
+services:
+  api:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./checkpoints:/app/checkpoints
+    environment:
+      - MODEL_PATH=/app/checkpoints/improved_cnn_final.keras
+    restart: unless-stopped

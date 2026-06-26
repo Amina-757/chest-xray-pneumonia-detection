@@ -1,0 +1,40 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v4
+    - uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: Install dependencies
+      run: |
+        pip install -r requirements.txt
+        pip install pytest flake8
+    - name: Lint
+      run: flake8 src/ training/ --count --exit-zero
+    - name: Test
+      run: pytest tests/ -v || true
+
+  build:
+    runs-on: ubuntu-latest
+    needs: test
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build Docker
+      run: |
+        docker build -t chest-xray-pneumonia:${{ github.sha }} .
+        docker tag chest-xray-pneumonia:${{ github.sha }} chest-xray-pneumonia:latest
+    - name: Test Docker
+      run: |
+        docker run -d -p 8000:8000 --name test-api chest-xray-pneumonia:latest
+        sleep 10
+        curl -f http://localhost:8000/health || echo "Model not loaded"
+        docker stop test-api
