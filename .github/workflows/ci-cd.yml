@@ -30,4 +30,4 @@ jobs:
         echo "✅ Docker image built successfully"
     
     - name: Pipeline complete
-      run: echo "✅ CI/CD pipeline completed successfully"
+      run: echo "✅ CI/CD pipeline completed successfully" "---"
