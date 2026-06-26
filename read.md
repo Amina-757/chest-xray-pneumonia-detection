@@ -23,3 +23,4 @@ Pneumonia is a leading cause of death worldwide. This project uses Deep Learning
 docker build -t chest-xray-pneumonia:v1 .
 docker run -p 8000:8000 chest-xray-pneumonia:v1
 kubectl apply -f kubernetes/
+-----------------------
