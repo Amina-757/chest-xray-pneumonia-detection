@@ -15,9 +15,26 @@ app = FastAPI(
 )
 
 # Load model
-MODEL_PATH = '/content/checkpoints/improved_cnn_final.keras'
+import os
+import tensorflow as tf
+from fastapi import FastAPI, File, UploadFile
+from fastapi.responses import JSONResponse
+from pydantic import BaseModel
+from PIL import Image
+import io
+import numpy as np
+from datetime import datetime
+
+app = FastAPI(
+    title="Chest X-Ray Pneumonia Detection API",
+    description="API for pneumonia detection from chest X-ray images",
+    version="1.0.0"
+)
+
+# Load model
+MODEL_PATH = os.getenv('MODEL_PATH', '/app/checkpoints/improved_cnn_final.keras')
 model = tf.keras.models.load_model(MODEL_PATH)
-print("✅ Model loaded successfully!")
+print(f"✅ Model loaded successfully from {MODEL_PATH}")
 
 class PredictionResponse(BaseModel):
     filename: str
