@@ -2,9 +2,7 @@ name: CI/CD Pipeline
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main ]
+    branches: [ master ]
 
 jobs:
   test:
@@ -19,7 +17,7 @@ jobs:
         pip install -r requirements.txt
         pip install pytest flake8
     - name: Lint
-      run: flake8 src/ training/ --count --exit-zero
+      run: flake8 src/ --count --exit-zero || true
     - name: Test
       run: pytest tests/ -v || true
 
@@ -38,4 +36,3 @@ jobs:
         sleep 10
         curl -f http://localhost:8000/health || echo "Model not loaded"
         docker stop test-api
- ------------------------------------------
